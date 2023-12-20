@@ -7,7 +7,7 @@ class Cart(models.Model):
     Cart model for adding a new product
     """
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='Пользователь')
-    products = models.ManyToManyField(Product, verbose_name='Название')
+    products = models.ManyToManyField(Product, verbose_name='Название', blank=True)
 
     class Meta:
         verbose_name = 'Корзина'

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from market_auth.models import Customer
 import uuid
 
@@ -31,15 +32,18 @@ class Product(models.Model):
     slug = models.SlugField(unique=True, blank=True, verbose_name='Url')
     is_stock = models.BooleanField(default=True, verbose_name='В наличии')
     categories = models.ManyToManyField(Category, verbose_name='Категория')
-    # Это демо-поле для поставщика, ему будут присваиваться определенные права доступа 
     seller_id = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Продавец')
-    
-    def __str__(self) -> str:
-        return self.name
     
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
+
+    def __str__(self) -> str:
+        return self.name
+    
+    def get_absolute_url(self):
+        return reverse('product', kwargs={'slug': self.slug})
+    
 
 class ProductImage(models.Model):
     """

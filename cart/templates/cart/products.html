@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="container">
+  {% if products %}
+      <table class="table">
+          <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.product_count }}</td>
+                    <td>{{ product.price }}</td>
+                </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+
+  {% else %}
+      <p>Your shopping cart is empty.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from .forms import CustomerRegisterForm, CustomerLoginForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
+from cart.models import Cart
 
 def user_login(request):
     if request.method == 'POST':
@@ -23,6 +24,7 @@ def register(request):
         form = CustomerRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Cart.objects.create(customer_id=user)
             login(request, user)
             messages.success(request, 'Успешная регистрация')
             # send_test_message.delay(form.cleaned_data['email'])

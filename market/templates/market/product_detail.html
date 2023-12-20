@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">{{ product.description }}</p>
+        <p class="card-text">Цена: {{ product.price }}</p>
+        <p class="card-text">Уникальный код продукта: {{ product.product_code }}</p>
+        <p class="card-text">Количество на складе: {{ product.product_count }}</p>
+        <p class="card-text">Категории:
+            {% for category in product.categories.all %}
+            {{ category.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+        <p class="card-text">Продавец: {{ product.seller_id.name }}</p>
+    </div>
+</div>
+{% endblock %}

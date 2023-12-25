@@ -17,12 +17,14 @@ class MainListView(ListView):
 
 
 class ProductDetailView(DetailView):
+    """ Представление определенного товара """
     model = Product
     context_object_name = 'product'
     template_name = 'market/product_detail.html'
     form_class = CreateReviewForm
 
     def post(self, request, *args, **kwargs):
+        """ Форма добавления отзыва """
         self.object = self.get_object()
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
@@ -38,7 +40,9 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['form'] = self.form_class
+        # Отзывы для определенного товара
         context['reviews'] = Review.objects.all().prefetch_related('product')
+        # Показ просмотров товара, пока работает костыльно, инкеремтится даже при обновлении страницы
         product = self.get_object()
         product.views += 1
         product.save()

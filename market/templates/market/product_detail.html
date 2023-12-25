@@ -1,18 +1,47 @@
 {% extends 'base.html' %}
 {% block main %}
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">{{ product.name }}</h5>
-        <p class="card-text">{{ product.description }}</p>
-        <p class="card-text">Цена: {{ product.price }}</p>
-        <p class="card-text">Уникальный код продукта: {{ product.product_code }}</p>
-        <p class="card-text">Количество на складе: {{ product.product_count }}</p>
-        <p class="card-text">Категории:
-            {% for category in product.categories.all %}
-            {{ category.name }}{% if not forloop.last %}, {% endif %}
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ product.name }}.    Просмотры: {{ product.views }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <p class="card-text">Цена: {{ product.price }}</p>
+            <p class="card-text">Уникальный код продукта: {{ product.product_code }}</p>
+            <p class="card-text">Количество на складе: {{ product.product_count }}</p>
+            <p class="card-text">Категории:
+                {% for category in product.categories.all %}
+                {{ category.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            <p class="card-text">Продавец: {{ product.seller_id }}</p>
+            {% for product_img in product.images.all %}
+            <img src="{{ product_img.image.url }}" alt="{{ product.name }}" width="100" hight="75">
             {% endfor %}
-        </p>
-        <p class="card-text">Продавец: {{ product.seller_id.name }}</p>
+        </div>
     </div>
+    {% if request.user.is_authenticated %}
+    <div class="col-6 offset-3">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mb-3">Оставить отзыв</button>
+        </form>
+    </div>
+    {% endif %}
+    <div class="row my-3">
+        {% for review in reviews %}
+
+        <div class="card mx-1" style="width: 18rem;">
+            <img src="{{ review.image.url }}" class="card-img-top" alt="Изображение">
+            <div class="card-body">
+                <p class="card-text">Имя пользователя: {{ review.customer_id }}</p>
+                <p class="card-text">Отзыв: {{ review.description }}</p>
+                <p class="card-text">Оценка пользователя: {{ review.estimate }}</p>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+
 </div>
 {% endblock %}

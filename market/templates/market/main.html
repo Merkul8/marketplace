@@ -11,7 +11,9 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                        {% for product_img in product.images.all %}
+                        <img src="{{ product_img.image.url }}" alt="{{ product.name }}" width="100" hight="75">
+                        {% endfor %}
                         <p class="card-text">{{ product.price }}</p>
                         {% if request.user.is_authenticated %}
                         <form method="post" action="{% url 'add_product_to_cart' product.pk %}">

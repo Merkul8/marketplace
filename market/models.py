@@ -31,9 +31,10 @@ class Product(models.Model):
     product_count = models.IntegerField(verbose_name='Количество товара')
     slug = models.SlugField(unique=True, blank=True, verbose_name='Url')
     is_stock = models.BooleanField(default=True, verbose_name='В наличии')
-    categories = models.ManyToManyField(Category, verbose_name='Категория')
+    categories = models.ManyToManyField(Category, verbose_name='Категория', related_name='categories')
     seller_id = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Продавец')
-    
+    views = models.PositiveIntegerField(verbose_name='Просмотры', blank=True, default=0)
+   
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
@@ -49,7 +50,7 @@ class ProductImage(models.Model):
     """
     Model for adding photos to a product
     """
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name=f'Фото товара', blank=True)
 
     class Meta:

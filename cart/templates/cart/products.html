@@ -2,28 +2,38 @@
 {% block main %}
 <div class="container">
   {% if products %}
-      <table class="table">
-          <thead>
-              <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th></th>
-              </tr>
-          </thead>
-          <tbody>
-              {% for product in products %}
-                <tr>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.product_count }}</td>
-                    <td>{{ product.price }}</td>
-                </tr>
-              {% endfor %}
-          </tbody>
-      </table>
+  <div>
+    <form method="post" action="{% url 'clear_all_products' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Отчистить корзину</button>
+  </form>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.price }}</td>
+        <td>
+          <form method="post" action="{% url 'delete_product_from_cart' product.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Удалить из корзины</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
   {% else %}
-      <p>Your shopping cart is empty.</p>
+  <p>Your shopping cart is empty.</p>
   {% endif %}
 </div>
 {% endblock %}

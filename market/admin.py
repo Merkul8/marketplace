@@ -5,7 +5,7 @@ from .models import *
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'product_code', 'price', 'is_stock')
     list_display_links = ('id', 'name')
-    search_fields = ('name', 'description',)
+    search_fields = ('name',)
     list_filter = ('categories',)
     prepopulated_fields = {'slug': ('name',)}
 

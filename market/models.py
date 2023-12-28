@@ -25,7 +25,6 @@ class Product(models.Model):
     Model of a product 
     """
     name = models.CharField(verbose_name='Название товара', max_length=255)
-    description = models.CharField(verbose_name='Краткое описание', max_length=510)
     product_code = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name='Уникальный код продукта')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     product_count = models.IntegerField(verbose_name='Количество товара')

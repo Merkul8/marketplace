@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from market.models import Product
 from .models import Cart
 from django.contrib import messages
-from django.views.generic import ListView
+from django.db.models import Sum
 
 
 def add_product_to_cart(request, pk):
@@ -20,7 +20,8 @@ def add_product_to_cart(request, pk):
 def get_products_from_cart(request):
     cart = Cart.objects.get(customer_id=request.user)
     products = cart.products.all()
-    return render(request, 'cart/products.html', {'products': products})
+    total_price = products.aggregate(Sum('price'))['price__sum']
+    return render(request, 'cart/products.html', {'products': products, 'total_price': total_price})
 
 
 def delete_product_from_cart(request, pk):

@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block main %}
 <div class="container">
+    <div class="d-grid gap-2">
+        <a class="btn btn-primary my-5" type="button" href="{% url 'register_for_seller' %}">Стать продавцом</a>
+    </div>
     {% for category in categories %}
     <h3>{{ category.name }}</h3>
     <div class="row">
@@ -11,10 +14,11 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        {% for product_img in product.images.all %}
-                        <img src="{{ product_img.image.url }}" alt="{{ product.name }}" width="100" hight="75">
-                        {% endfor %}
-                        <p class="card-text">{{ product.price }}</p>
+                        {% if product.images.all.0 %}
+                        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" width="275"
+                            height="200">
+                        {% endif %}
+                        <p class="card-text">₽ {{ product.price }}</p>
                         {% if request.user.is_authenticated %}
                         <form method="post" action="{% url 'add_product_to_cart' product.pk %}">
                             {% csrf_token %}

@@ -31,9 +31,10 @@
       {% endfor %}
     </tbody>
   </table>
+  <button type="submit" class="btn btn-primary">₽ {{ total_price }}</button>
 
   {% else %}
-  <p>Your shopping cart is empty.</p>
+  <p>У вас нет товаров в корзине.</p>
   {% endif %}
 </div>
 {% endblock %}

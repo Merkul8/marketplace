@@ -143,3 +143,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Strip
+PUBLIC_API_KEY = os.getenv('public_api_key')
+SECRET_API_KEY = os.getenv('secret_api_key')

@@ -6,7 +6,7 @@
     <form method="post" action="{% url 'clear_all_products' %}">
       {% csrf_token %}
       <button type="submit" class="btn btn-primary">Отчистить корзину</button>
-  </form>
+    </form>
   </div>
   <table class="table">
     <thead>
@@ -31,10 +31,40 @@
       {% endfor %}
     </tbody>
   </table>
-  <button type="submit" class="btn btn-primary">₽ {{ total_price }}</button>
+  <button type="button" class="btn btn-primary" id="checkout-button">₽ {{ total_price }}</button>
 
   {% else %}
   <p>У вас нет товаров в корзине.</p>
   {% endif %}
 </div>
+<script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript">
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  // Create an instance of the Stripe object with your publishable API key
+  var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+  var checkoutButton = document.getElementById("checkout-button");
+  checkoutButton.addEventListener("click", function () {
+    fetch("{% url 'buy' %}", {
+      method: "POST",
+      headers: {
+        'X-CSRFToken': csrftoken
+      }
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (session) {
+        return stripe.redirectToCheckout({ sessionId: session.id });
+      })
+      .then(function (result) {
+        if (result.error) {
+          alert(result.error.message);
+        }
+      })
+      .catch(function (error) {
+        console.error("Error:", error);
+      });
+  });
+</script>
 {% endblock %}

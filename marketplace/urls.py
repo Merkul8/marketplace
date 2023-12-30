@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('market.urls')),
     path('auth/', include('market_auth.urls')),
     path('cart/', include('cart.urls')),
+    path('payment/', include('payment.urls')),
 ]
 
 

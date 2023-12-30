@@ -20,12 +20,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">User : {{ user }}</a>
                 </li>
+                {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">LOG OUT</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">LOG OUT</a>
                 </li>
+                {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">LOG IN</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'login' %}">LOG IN</a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'register' %}">SIGN UP</a>
                 </li>

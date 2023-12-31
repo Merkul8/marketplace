@@ -68,3 +68,18 @@ def create_product(request):
     return render(request, 'market/create_product.html', {'product_form': product_form, 'image_form': image_form})
 
 
+class Search(ListView):
+    """ Поиск товаров """
+    template_name = 'market/search.html'
+    context_object_name = 'products'
+    paginate_by = 20
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return Product.objects.filter(name__icontains=self.request.GET.get('q'))
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['q'] = self.request.GET.get('q')
+        return context
+
+

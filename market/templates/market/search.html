@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="container">
+    <div class="d-grid gap-2">
+        <a class="btn btn-primary my-5" type="button" href="{% url 'register_for_seller' %}">Стать продавцом</a>
+    </div>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-3">
+            <a href="{{ product.get_absolute_url }}" style="text-decoration: none;">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        {% if product.images.all.0 %}
+                        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" width="275"
+                            height="200">
+                        {% endif %}
+                        <p class="card-text">₽ {{ product.price }}</p>
+                        {% if request.user.is_authenticated %}
+                        <form method="post" action="{% url 'add_product_to_cart' product.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+        </div>
+        {% endfor %}
+
+        </a>
+    </div>
+</div>
+
+{% endblock %}

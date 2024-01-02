@@ -14,7 +14,7 @@ class MainListView(ListView):
     model = Product
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Product.objects.all().prefetch_related('images')
+        return Product.objects.all().order_by('-views').prefetch_related('images')
 
 
 class ProductDetailView(DetailView):
@@ -72,7 +72,6 @@ class Search(ListView):
     """ Поиск товаров """
     template_name = 'market/search.html'
     context_object_name = 'products'
-    paginate_by = 20
 
     def get_queryset(self) -> QuerySet[Any]:
         return Product.objects.filter(name__icontains=self.request.GET.get('q'))

@@ -4,11 +4,8 @@
     <div class="d-grid gap-2">
         <a class="btn btn-primary my-5" type="button" href="{% url 'register_for_seller' %}">Стать продавцом</a>
     </div>
-    {% for category in categories %}
-    <h3>{{ category.name }}</h3>
     <div class="row">
         {% for product in products %}
-        {% if category in product.categories.all %}
         <div class="col-3">
             <a href="{{ product.get_absolute_url }}" style="text-decoration: none;">
                 <div class="card">
@@ -31,10 +28,8 @@
             </a>
         </div>
 
-        {% endif %}
         {% endfor %}
     </div>
-    {% endfor %}
 </div>
 
 {% endblock %}

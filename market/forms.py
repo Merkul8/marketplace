@@ -1,6 +1,8 @@
 from django import forms
 from .models import Product, ProductImage
-from django.utils.text import slugify
+# from django.utils.text import slugify
+
+from slugify import slugify
 
 class ProductForm(forms.ModelForm):
 

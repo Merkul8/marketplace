@@ -104,6 +104,7 @@ class CustomEncoder(json.JSONEncoder):
 
 
 class ProductsListView(generics.ListAPIView):
+    """ Представление для использования совестно с микросервисом """
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
 

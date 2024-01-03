@@ -109,6 +109,7 @@ class ProductsListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        self.queryset_to_json()
         return Product.objects.filter(seller_id=user).order_by('-pk')
     
     def queryset_to_json(self):
@@ -116,7 +117,7 @@ class ProductsListView(generics.ListAPIView):
         queryset = Product.objects.filter(seller_id=user).order_by('-pk').values()
         with open('products.json', 'w', encoding='utf-8') as f:
             json.dump(list(queryset), f, cls=CustomEncoder, ensure_ascii=False)
-        return {'file': os.path.abspath(f)}
+        return {'file': os.path.abspath('products.json')}
         
 
 

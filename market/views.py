@@ -104,21 +104,16 @@ class CustomEncoder(json.JSONEncoder):
 
 
 class ProductsListView(generics.ListAPIView):
-    """ Представление для использования совестно с микросервисом """
+    """ Представление для использования совестно с микросервисом .
+    Получение всех товаров для определенного пользователя с помощью токена,
+    токен используется для взаимодействия с микросервисом """
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        self.queryset_to_json()
         return Product.objects.filter(seller_id=user).order_by('-pk')
     
-    def queryset_to_json(self):
-        user = self.request.user
-        queryset = Product.objects.filter(seller_id=user).order_by('-pk').values()
-        with open('products.json', 'w', encoding='utf-8') as f:
-            json.dump(list(queryset), f, cls=CustomEncoder, ensure_ascii=False)
-        return {'file': os.path.abspath('products.json')}
         
 
 

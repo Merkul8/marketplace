@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from market.models import Product
 from .models import Cart

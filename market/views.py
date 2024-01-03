@@ -1,4 +1,7 @@
+import json
+import os
 from typing import Any
+from uuid import UUID
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from .serializers import *
@@ -7,8 +10,13 @@ from django.views.generic import ListView, DetailView
 from review.forms import CreateReviewForm
 from review.models import Review
 from .forms import *
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from decimal import Decimal
+
 
 class MainListView(ListView):
+    """ Главная страница сайта с товарами """
     context_object_name = 'products'
     template_name = 'market/main.html'
     model = Product
@@ -51,6 +59,7 @@ class ProductDetailView(DetailView):
     
 
 def create_product(request):
+    """ Создание товара только для продавцов(role = 'Продавец') """
     if request.method == 'POST':
         product_form = ProductForm(request.POST)
         image_form = ProductImageForm(request.POST, request.FILES)
@@ -69,7 +78,7 @@ def create_product(request):
 
 
 class Search(ListView):
-    """ Поиск товаров """
+    """ Поиск товаров (Демо-версия поиска)"""
     template_name = 'market/search.html'
     context_object_name = 'products'
 
@@ -80,5 +89,35 @@ class Search(ListView):
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q')
         return context
+    
+
+# API для микросервиса на Go
+    
+
+class CustomEncoder(json.JSONEncoder):
+  def default(self, obj):
+      if isinstance(obj, Decimal):
+          return str(obj)
+      elif isinstance(obj, UUID):
+          return str(obj)
+      return super().default(obj)
+
+
+class ProductsListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Product.objects.filter(seller_id=user).order_by('-pk')
+    
+    def queryset_to_json(self):
+        user = self.request.user
+        queryset = Product.objects.filter(seller_id=user).order_by('-pk').values()
+        with open('products.json', 'w', encoding='utf-8') as f:
+            json.dump(list(queryset), f, cls=CustomEncoder, ensure_ascii=False)
+        return {'file': os.path.abspath(f)}
+        
+
 
 

@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'market_auth',
+    'django.contrib.sites',
+    'django.contrib.sitemaps'
 ]
 
 MIDDLEWARE = [

@@ -19,7 +19,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.authtoken.views import obtain_auth_token
+from django.contrib.sitemaps.views import sitemap
+from market.sitemaps import MarketplaceSitemap
 
+sitemaps = {
+    'products': MarketplaceSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +33,7 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('payment/', include('payment.urls')),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap')
 ]
 
 

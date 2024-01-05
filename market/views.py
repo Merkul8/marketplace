@@ -92,7 +92,6 @@ class Search(ListView):
     
 
 # API для микросервиса на Go
-    
 
 class CustomEncoder(json.JSONEncoder):
   def default(self, obj):

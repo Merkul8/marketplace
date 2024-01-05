@@ -33,6 +33,7 @@ class Product(models.Model):
     categories = models.ManyToManyField(Category, verbose_name='Категория', related_name='categories')
     seller_id = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Продавец')
     views = models.PositiveIntegerField(verbose_name='Просмотры', blank=True, default=0)
+    updated = models.DateTimeField(auto_now=True)
    
     class Meta:
         verbose_name = 'Товар'

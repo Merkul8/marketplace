@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
@@ -7,11 +8,8 @@ from django.views.generic import ListView, DetailView
 from review.forms import CreateReviewForm
 from review.models import Review
 from .forms import *
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
-import django_filters
 from itertools import chain
+from django.db.models import Q
 
 
 class MainListView(ListView):
@@ -83,10 +81,12 @@ class Search(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         query = self.request.GET.get('q')
-        queryset = Product.objects.filter(name__icontains=query)
+        queryset = Product.objects.filter(Q(name__icontains=query) | Q(categories__name__icontains=query)).distinct()
         required_queryset = Product.objects.order_by('-views')[:10]
         if queryset.exists():
-            return list(chain(queryset, required_queryset))
+            combined_queryset = list(chain(queryset, required_queryset))
+            unique_queryset = OrderedDict((product.id, product) for product in combined_queryset).values()
+            return unique_queryset
         return required_queryset
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -95,53 +95,7 @@ class Search(ListView):
         return context
     
 
-# API для микросервиса на Go
 
-class ProductsListView(generics.ListAPIView):
-    """ Представление для использования совестно с микросервисом .
-    Получение всех товаров для определенного пользователя с помощью токена,
-    токен используется для взаимодействия с микросервисом """
-    serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return Product.objects.filter(seller_id=user).order_by('-pk')
-    
-
-
-# Endpoints for filter search
-
-class ProductByCategoryFilter(django_filters.FilterSet):
-    categories__name = django_filters.CharFilter(lookup_expr='icontains')
-
-    class Meta:
-        model = Product
-        fields = ['categories__name']
-
-
-class ProductByCategoryView(generics.ListAPIView):
-    """ Поиск товаров по категории """
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = ProductByCategoryFilter
-
-
-class CategoryFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(lookup_expr='icontains')
-
-    class Meta:
-        model = Category
-        fields = ['name']
-
-
-class CategoryListView(generics.ListAPIView):
-    """ Поиск категории для дальнейшего поиска товаров """
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = CategoryFilter
 
 
 

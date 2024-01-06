@@ -16,10 +16,14 @@
             {% for product_img in product.images.all %}
             <img src="{{ product_img.image.url }}" alt="{{ product.name }}" width="100" hight="75">
             {% endfor %}
+            {% if request.user.is_authenticated %}
             <form method="post" action="{% url 'add_product_to_cart' product.pk %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Добавить в корзину</button>
             </form>
+            {% else %}
+            <h3>Чтобы добавить товар в корзину, аутентифицируйтесь.</h3>
+            {% endif %}
         </div>
     </div>
     {% if request.user.is_authenticated %}

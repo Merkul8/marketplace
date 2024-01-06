@@ -1,5 +1,5 @@
 import json
-import os
+from django.db.models import Q
 from typing import Any
 from uuid import UUID
 from django.db.models.query import QuerySet
@@ -83,7 +83,8 @@ class Search(ListView):
     context_object_name = 'products'
 
     def get_queryset(self) -> QuerySet[Any]:
-        return Product.objects.filter(name__icontains=self.request.GET.get('q'))
+        query = self.request.GET.get('q')
+        return Product.objects.filter(name__icontains=query)
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)

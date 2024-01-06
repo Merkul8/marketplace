@@ -1,7 +1,4 @@
-import json
-from django.db.models import Q
 from typing import Any
-from uuid import UUID
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from .serializers import *
@@ -12,7 +9,9 @@ from review.models import Review
 from .forms import *
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from decimal import Decimal
+from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
+from itertools import chain
 
 
 class MainListView(ListView):
@@ -84,7 +83,11 @@ class Search(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         query = self.request.GET.get('q')
-        return Product.objects.filter(name__icontains=query)
+        queryset = Product.objects.filter(name__icontains=query)
+        required_queryset = Product.objects.order_by('-views')[:10]
+        if queryset.exists():
+            return list(chain(queryset, required_queryset))
+        return required_queryset
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -93,15 +96,6 @@ class Search(ListView):
     
 
 # API для микросервиса на Go
-
-class CustomEncoder(json.JSONEncoder):
-  def default(self, obj):
-      if isinstance(obj, Decimal):
-          return str(obj)
-      elif isinstance(obj, UUID):
-          return str(obj)
-      return super().default(obj)
-
 
 class ProductsListView(generics.ListAPIView):
     """ Представление для использования совестно с микросервисом .
@@ -114,7 +108,40 @@ class ProductsListView(generics.ListAPIView):
         user = self.request.user
         return Product.objects.filter(seller_id=user).order_by('-pk')
     
-        
+
+
+# Endpoints for filter search
+
+class ProductByCategoryFilter(django_filters.FilterSet):
+    categories__name = django_filters.CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = Product
+        fields = ['categories__name']
+
+
+class ProductByCategoryView(generics.ListAPIView):
+    """ Поиск товаров по категории """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductByCategoryFilter
+
+
+class CategoryFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = Category
+        fields = ['name']
+
+
+class CategoryListView(generics.ListAPIView):
+    """ Поиск категории для дальнейшего поиска товаров """
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CategoryFilter
 
 
 

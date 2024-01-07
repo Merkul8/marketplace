@@ -19,7 +19,7 @@ class Review(models.Model):
     image = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Фото товара', blank=True)
     estimate = models.PositiveSmallIntegerField(choices=ESTIMATIONS, verbose_name='Оценка')
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='Пользователь', default=None)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт', default=None, related_name='product')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт', default=None, related_name='reviews')
     like = models.PositiveIntegerField(verbose_name='Лайк', blank=True, default=0)
     dislike = models.PositiveIntegerField(verbose_name='Дизлайк', blank=True, default=0)
 

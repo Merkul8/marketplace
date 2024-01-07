@@ -11,7 +11,8 @@ urlpatterns = [
     path('create_product/', create_product, name='create_product'),
     path('search/', Search.as_view(), name='search'),
     # API
-    path('api/products/', ProductsListView.as_view(), name='api_products'),
+    path('api/products/', ProductsBySellerListView.as_view(), name='api_products'),
     path('api/products-by-category/', ProductByCategoryView.as_view(), name='products_by_category'),
     path('api/categories/', CategoryListView.as_view(), name='category_list'),
+    path('api/product-detail', ProductsListView.as_view(), name='products_detail'),
 ]

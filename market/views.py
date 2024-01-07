@@ -21,6 +21,7 @@ class MainListView(ListView):
     def get_queryset(self) -> QuerySet[Any]:
         return Product.objects.all().order_by('-views').prefetch_related('images')
 
+# detail update create нужно сделать с помощью drf, выглядит не очень :(
 
 class ProductDetailView(DetailView):
     """ Представление определенного товара """

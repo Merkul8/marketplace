@@ -3,11 +3,15 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 import django_filters
 from .serializers import *
+from .models import Product
+from review.models import Review
+
+
 # API для микросервиса на Go
 
-class ProductsListView(generics.ListAPIView):
+class ProductsBySellerListView(generics.ListAPIView):
     """ Представление для использования совестно с микросервисом .
-    Получение всех товаров для определенного пользователя с помощью токена,
+    Получение всех товаров для определенного пользователя с помощью токена(см marketplace/urls.py),
     токен используется для взаимодействия с микросервисом """
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
@@ -50,3 +54,8 @@ class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = CategoryFilter
+
+
+class ProductsListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer

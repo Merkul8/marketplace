@@ -1,0 +1,5 @@
+[
+    {"model": "market_auth.role", "pk": 1, "fields": {"name": "Администратор"}},
+    {"model": "market_auth.role", "pk": 2, "fields": {"name": "Продавец"}},
+    {"model": "market_auth.role", "pk": 3, "fields": {"name": "Покупатель"}}
+ ]

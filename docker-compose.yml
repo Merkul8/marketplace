@@ -1,0 +1,39 @@
+services:
+ web: 
+   build:
+     context: .
+   ports:
+     - "8000:8000"
+   volumes:
+     - ./marketplace:/ .
+   environment:
+     - DB_HOST=${DB_HOST}
+     - DB_NAME=${DB_NAME}
+     - DB_USER=${DB_USER}
+     - DB_PASS=${DB_PASS}
+     - CELERY_BROKER_URL=redis://redis:6379/0
+   command: >
+     sh -c "python manage.py runserver 0.0.0.0:8000"
+   depends_on:
+     - db
+     - redis
+     - celery
+
+ db:
+   image: postgres:13
+   environment:
+     - POSTGRES_DB=${POSTGRES_DB}
+     - POSTGRES_USER=${POSTGRES_USER}
+     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+ redis:
+   image: redis:latest
+
+ celery:
+   build:
+     context: .
+   command: celery -A marketplace worker -l info
+   volumes:
+     - ./marketplace:/ .
+   depends_on:
+     - redis

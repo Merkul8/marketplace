@@ -14,3 +14,5 @@
 
 Создание суперпользователя:
 "docker exec -it marketplace-web-1 python manage.py createsuperuser"
+
+Насыщенность проекта JS-ом - bootstrap

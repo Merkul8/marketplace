@@ -1,9 +1,14 @@
 from django.shortcuts import redirect, render
+
+from market.tasks import (
+    send_mail_before_sing_in,
+    send_mail_for_sellers,
+    )
 from .forms import CustomerRegisterForm, CustomerLoginForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from cart.models import Cart
-from .models import Role
+from .models import Customer, Role
 
 def user_login(request):
     if request.method == 'POST':
@@ -28,7 +33,7 @@ def register(request):
             Cart.objects.create(customer_id=user)
             login(request, user)
             messages.success(request, 'Успешная регистрация')
-            # send_test_message.delay(form.cleaned_data['email'])
+            send_mail_before_sing_in.delay(form.cleaned_data['email'], form.cleaned_data['username'])
             return redirect('home')
         else:
             messages.error(request, 'Ошибка регистрации')
@@ -48,7 +53,7 @@ def register_for_seller(request):
             Cart.objects.create(customer_id=user)
             login(request, user)
             messages.success(request, 'Успешная регистрация')
-            # send_test_message.delay(form.cleaned_data['email'])
+            send_mail_for_sellers.delay(form.cleaned_data['email'], form.cleaned_data['username'])
             return redirect('home')
         else:
             messages.error(request, 'Ошибка регистрации')

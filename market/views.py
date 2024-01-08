@@ -11,6 +11,10 @@ from review.models import Review
 from .forms import *
 from itertools import chain
 from django.db.models import Q
+from .tasks import (
+    send_mail_befor_add_review,
+    send_mail_before_add_product,
+)
 
 
 class MainListView(ListView):
@@ -40,6 +44,7 @@ class ProductDetailView(DetailView):
             review.customer_id = request.user
             review.product = self.object
             review.save()
+            send_mail_befor_add_review.delay(request.user.email, request.user.username)
             return redirect('product', self.object.slug)
         else:
             form = self.form_class()
@@ -88,6 +93,7 @@ def create_product(request):
             image = image_form.save(commit=False)
             image.product_id = product
             image.save()
+            send_mail_before_add_product.delay(request.user.email, request.user.username)
             return redirect('home')
     else:
         product_form = ProductForm()

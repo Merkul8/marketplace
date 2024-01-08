@@ -3,6 +3,15 @@ from django.urls import reverse
 from market_auth.models import Customer
 import uuid
 
+class Ip(models.Model):
+    ip = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = 'IP Адрес'
+        verbose_name_plural = 'IP Адреса'
+
+    def __str__(self) -> str:
+        return self.ip
 
 class Category(models.Model):
     """
@@ -32,7 +41,7 @@ class Product(models.Model):
     is_stock = models.BooleanField(default=True, verbose_name='В наличии')
     categories = models.ManyToManyField(Category, verbose_name='Категория', related_name='categories')
     seller_id = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Продавец')
-    views = models.PositiveIntegerField(verbose_name='Просмотры', blank=True, default=0)
+    views = models.ManyToManyField(Ip, blank=True, related_name='product_views')
     updated = models.DateTimeField(auto_now=True)
    
     class Meta:
@@ -44,6 +53,9 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse('product', kwargs={'slug': self.slug})
+    
+    def total_views(self):
+        return self.views.count()
     
 
 class ProductImage(models.Model):

@@ -1,9 +1,10 @@
 from collections import OrderedDict
 from typing import Any
 from django.db.models.query import QuerySet
+from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from .serializers import *
-from .models import Product
+from .models import Product, Ip
 from django.views.generic import ListView, DetailView
 from review.forms import CreateReviewForm
 from review.models import Review
@@ -44,15 +45,34 @@ class ProductDetailView(DetailView):
             form = self.form_class()
         return form
     
+    # Получения IP адреса
+    def get_client_ip(self, request: HttpRequest) -> str:
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR') # В REMOTE_ADDR значение айпи пользователя
+        return ip
+    
+    def increment_views_for_product(self):
+        product = self.get_object()
+        ip = self.get_client_ip(self.request)
+        Ip.objects.get_or_create(ip=ip)
+        ip_for_add = Ip.objects.get(ip=ip)
+        product.views.add(ip_for_add)
+        return ip_for_add
+    
+    def get_reviews_by_product(self):
+        product = self.get_object()
+        return Review.objects.filter(product=product)
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['form'] = self.form_class
-        # Показ просмотров товара, пока работает костыльно, инкеремтится даже при обновлении страницы
-        product = self.get_object()
-        product.views += 1
-        product.save()
         # Отзывы для определенного товара
-        context['reviews'] = Review.objects.filter(product=product)
+        context['reviews'] = self.get_reviews_by_product()
+        # Получения IP адреса
+        context['ip'] = self.increment_views_for_product()
         return context
     
 
@@ -95,7 +115,6 @@ class Search(ListView):
         context['q'] = self.request.GET.get('q')
         return context
     
-
 
 
 

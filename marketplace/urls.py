@@ -32,7 +32,9 @@ urlpatterns = [
     path('auth/', include('market_auth.urls')),
     path('cart/', include('cart.urls')),
     path('payment/', include('payment.urls')),
+    # Получение токена для микросервиса
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    # Автоматическая генерация sitemap.xml
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap')
 ]
 

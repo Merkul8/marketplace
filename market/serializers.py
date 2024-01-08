@@ -19,19 +19,21 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ('description', 'estimate', 'customer_id', )
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    """Сериалайзер для вывода категорий"""
+    class Meta:
+        model = Category
+        fields = ('name',)
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """Для вывода детальной информации о товаре и отзывах 
     прикрепленных к нему"""
     reviews = ReviewSerializer(many=True)
+    categories = CategorySerializer(many=True)
 
     class Meta:
         model = Product
         fields = '__all__'
 
-
-class CategorySerializer(serializers.ModelSerializer):
-    """Сериалайзер для вывода категорий"""
-    class Meta:
-        model = Category
-        fields = '__all__'
 

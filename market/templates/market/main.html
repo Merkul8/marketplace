@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
-                        {% if product.images.all.0 %}
+                        {% if product.images.all %}
                         <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}" width="275"
                             height="200">
                         {% endif %}

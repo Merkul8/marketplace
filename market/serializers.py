@@ -3,13 +3,6 @@ from .models import Product, Category
 from review.models import Review
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    """Сериалайзер для фильтров и микросервиса"""
-    class Meta:
-        model = Product
-        fields = '__all__'
-
-
 class ReviewSerializer(serializers.ModelSerializer):
     """Сериалайзер для вывода отзывов"""
     customer_id = serializers.SlugRelatedField(slug_field='username', read_only=True)
@@ -34,6 +27,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ['views']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['total_views'] = instance.total_views
+        return representation
 
 

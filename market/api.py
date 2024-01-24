@@ -18,7 +18,7 @@ class ProductsBySellerListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Product.objects.filter(seller_id=user).order_by('-pk')
+        return Product.objects.filter(seller_id=user)
     
 
 

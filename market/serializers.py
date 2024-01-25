@@ -22,12 +22,12 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     """Для вывода детальной информации о товаре и отзывах 
     прикрепленных к нему"""
-    reviews = ReviewSerializer(many=True)
-    categories = CategorySerializer(many=True)
+    # reviews = ReviewSerializer(many=True)
+    # categories = CategorySerializer(many=True)
 
     class Meta:
         model = Product
-        exclude = ['views']
+        exclude = ['views', 'categories', 'updated']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

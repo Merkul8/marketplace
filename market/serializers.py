@@ -19,6 +19,22 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('name',)
 
 
+class ProductSerializerDetail(serializers.ModelSerializer):
+    """Для вывода детальной информации о товаре и отзывах 
+    прикрепленных к нему"""
+    reviews = ReviewSerializer(many=True)
+    categories = CategorySerializer(many=True)
+
+    class Meta:
+        model = Product
+        exclude = ['views', 'categories']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['total_views'] = instance.total_views
+        return representation
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """Для вывода детальной информации о товаре и отзывах 
     прикрепленных к нему"""
@@ -27,7 +43,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = ['views', 'categories', 'updated']
+        exclude = ['views', 'categories', 'update']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

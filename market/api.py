@@ -35,7 +35,7 @@ class ProductByCategoryFilter(django_filters.FilterSet):
 class ProductByCategoryView(generics.ListAPIView):
     """ Поиск товаров по категории """
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductSerializerDetail
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductByCategoryFilter
 
@@ -58,4 +58,4 @@ class CategoryListView(generics.ListAPIView):
 
 class ProductsListView(generics.ListAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductSerializerDetail
